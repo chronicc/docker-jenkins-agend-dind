@@ -9,10 +9,16 @@ pipeline {
 
       }
       steps {
-        sh 'docker build -t chronicc/jenkins-agend-dind:latest-dev .'
-        sh 'docker push chronicc/jenkins-agend-dind:latest-dev'
+        script {
+          withCredentials([usernamePassword(credentialsId: 'dockerhub_credentials', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
+            sh 'docker build -t chronicc/jenkins-agend-dind:latest-dev .'
+            sh 'docker login -u $USERNAME -p $PASSWORD'
+            sh 'docker push chronicc/jenkins-agend-dind:latest-dev'
+          }
+        }
       }
     }
 
   }
 }
+
