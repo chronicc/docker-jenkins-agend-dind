@@ -9,19 +9,19 @@ pipeline {
 
       }
       steps {
-        sh 'make pull'
-        sh 'make build'
-        sh 'make tag'
+        sh 'make step.pull'
+        sh 'make step.build'
+        sh 'make step.tag'
         script {
           withCredentials([
             usernamePassword(credentialsId: 'dockerhub_credentials',
             usernameVariable: 'USERNAME',
             passwordVariable: 'PASSWORD')
           ]) {
-            sh 'make login REGISTRY_USERNAME=USERNAME REGISTRY_PASSWORD=PASSWORD'
+            sh 'make step.login REGISTRY_USERNAME=USERNAME REGISTRY_PASSWORD=PASSWORD'
           }
         }
-        sh 'make push'
+        sh 'make step.push'
       }
     }
 
