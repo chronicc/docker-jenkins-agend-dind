@@ -9,13 +9,19 @@ pipeline {
 
       }
       steps {
+        sh 'make pull'
+        sh 'make build'
+        sh 'make tag'
         script {
-          withCredentials([usernamePassword(credentialsId: 'dockerhub_credentials', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
-            sh 'docker build -t chronicc/jenkins-agend-dind:${BRANCH_NAME} .'
-            sh 'docker login -u $USERNAME -p $PASSWORD'
-            sh 'docker push chronicc/jenkins-agend-dind:${BRANCH_NAME}'
+          withCredentials([
+            usernamePassword(credentialsId: 'dockerhub_credentials',
+            usernameVariable: 'USERNAME',
+            passwordVariable: 'PASSWORD')
+          ]) {
+            sh 'make login REGISTRY_USERNAME=USERNAME REGISTRY_PASSWORD=PASSWORD'
           }
         }
+        sh 'make push'
       }
     }
 
